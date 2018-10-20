@@ -23,20 +23,57 @@ db.once("open", function(){
     var AnimalSchema = new Schema({
 		type: 	{type: String, default: "goldfish"},
 		color: 	{type: String, default: "small"},
-		size:  	{type: String, default: "golden"},
+		size:  	String,
 		mass:  	{type: Number, default: 0.004},
 		name:  	{type: String, default: "Angela"},
-	});
+    });
+    
+    AnimalSchema.pre("save", function(next){
+        if(this.mass >= 100){
+            this.size = "big";
+        }else if(this.mass >= 5 && this.mass < 100){
+            this.size = "medium";
+        }else{
+            this.size = "small";
+        }
+        next();
+    });
+
+    AnimalSchema.statics.findSize = function(size, callback){
+        // this == Animal
+        return this.find({size:size}, callback);
+    }
+
     var Animal = mongoose.model("Animal", AnimalSchema);
 
     var elephant = new Animal({
         type: "elephant",
-        size: "big",
         color: "black",
         mass: 1000,
         name: "Lawrence"
     });
-
+    var animalData = [
+        {
+            type: "mouse", 
+            color: "gray",
+            mass: 0.032, 
+            name: "Marvin"
+        },
+        {
+            type: "nurtiae", 
+            color: "brown",
+            mass: 6.699, 
+            name: "Gretchen"
+        },
+        {
+            type: "wolf", 
+            color: "grat",
+            mass: 5.32, 
+            name: "Iris"
+        },
+        elephant, 
+        animal        
+    ];
 
 // Now we can generate a generic object of our model by passing an empty object into it. 
     var animal = new Animal({}); // Goldfish    
@@ -48,22 +85,24 @@ db.once("open", function(){
     //         console.log("DB Connection closed!")
     //     });
     // });
-    Animal.remove({}, function(){
-        elephant.save(function(err){
-            if (err) console.log("Save Failed!", err);
-            animal.save(function(err){
-                if (err) console.error("Save Failed!", err);
-                // Ask the database for big animals
-                Animal.find({size: "big"}, function(err, animals){
+
+
+
+
+    Animal.remove({}, function(err){
+        if (err) console.error(err);
+            Animal.create(animalData, function(err, animals){
+                if(err) console.err(err);
+                Animal.findSize("medium", function(err, animals){
+                // Animal.find({}, function(err, animals){
                     animals.forEach(function(animal){
-                        console.log(animal.name + " the " + animal.color + " " + animal.type);
-                        db.close(function(){
-                            console.log("DB Connection Closed!");
-                        });
+                        console.log(animal.name + " the " + animal.color + " " + animal.type + " is a " + animal.size + "-sized animal.");
                     });
-                });                
-            });
+                    db.close(function(){
+                        console.log("DB Connection Closed!");
+                    }); 
+                });
+            });                
         });
     });
     // db.close();
-});
