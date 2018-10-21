@@ -6,20 +6,23 @@ var routes = require('./routes');
 var jsonParser = require("body-parser").json;
 var logger = require('morgan');
 
-
-
-// var jsonCheck = function(req,res,next){
-//     if(req.body){
-//         console.log("The sky is ", req.body.color);
-//     }else{
-//         console.log("There is no body property on the request");
-//     }
-//     next();
-// }
-// app.use(jsonCheck);
 app.use(logger("dev"));
 app.use(jsonParser());
-// app.use(jsonCheck);
+
+var mongoose = require('mongoose');
+
+mongoose.connect("mongodb://localhost:27017/qa");
+
+var db = mongoose.connection;
+db.on("error", function(err){
+    console.error("connection error:", err);
+});
+
+db.once("open", function(){
+    console.log("db connection successful");
+});
+
+
 app.use("/questions", routes);
 
 // Catch 404 and forward to error handler

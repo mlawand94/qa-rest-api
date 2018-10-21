@@ -38,6 +38,13 @@ db.once("open", function(){
         }
         next();
     });
+    // Find an animal, but find more animals with the same color. 
+    // Use instance methods - they exist on all documents. 
+    // Instance methods say this value points to instances of this document itself
+    AnimalSchema.methods.findSameColor = function(){
+        // this == document
+        return this.model("Animal").find({color: this.color}, callback);
+    }
 
     AnimalSchema.statics.findSize = function(size, callback){
         // this == Animal
@@ -93,7 +100,9 @@ db.once("open", function(){
         if (err) console.error(err);
             Animal.create(animalData, function(err, animals){
                 if(err) console.err(err);
-                Animal.findSize("medium", function(err, animals){
+                // the first to hit the db is the one returned
+                Animal.findOne({type: "elephant"}, function(err, animals){
+                // Animal.findSize("medium", function(err, animals){
                 // Animal.find({}, function(err, animals){
                     animals.forEach(function(animal){
                         console.log(animal.name + " the " + animal.color + " " + animal.type + " is a " + animal.size + "-sized animal.");
