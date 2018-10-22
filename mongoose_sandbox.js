@@ -100,8 +100,7 @@ db.once("open", function(){
         if (err) console.error(err);
             Animal.create(animalData, function(err, animals){
                 if(err) console.err(err);
-                // the first to hit the db is the one returned
-                Animal.findOne({type: "elephant"}, function(err, animals){
+                Animal.findOne({type}, function(err, animals){
                 // Animal.findSize("medium", function(err, animals){
                 // Animal.find({}, function(err, animals){
                     animals.forEach(function(animal){
