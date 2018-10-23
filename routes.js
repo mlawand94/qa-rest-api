@@ -9,7 +9,7 @@ var Question = require("./models").Question;
 */
 // Document will be present on any matching route
 // This callback is executed when qID is present. 
-router.param('/:qID', function(req, res, next, id){
+router.param('qID', function(req, res, next, qID){
     Question.findById(req.params.qID, function(err, doc){
         if(err) return next(err);
         // doc can't be found, return 404 error to client. 
