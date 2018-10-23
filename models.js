@@ -27,7 +27,7 @@ AnswerSchema.method("update", function(updates, callback){
     this.parent().save(callback);
 });
 
-AnswerSchema.method("vote", function(votes, callback){
+AnswerSchema.method("vote", function(vote, callback){
     if(vote === "up"){
         this.votes += 1;
     }else{
@@ -43,7 +43,7 @@ var QuestionSchema = new Schema({
 });
 
 QuestionSchema.pre("save", function(next){
-    this.answers.sort();
+    this.answers.sort(sortAnswers);
     next();
 });
 
