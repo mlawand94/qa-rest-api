@@ -58,15 +58,11 @@ router.get("/", function(req, res, next){
     .sort({createdAt: -1})
     .exec(function(err, questions){
         if (err) return next(err);
-        return res.json(questions);
+        return res.json(question);
     });
 
     // Return all the questions
-    res.json(
-        {
-            response: "You sent me a GET request"
-        }
-    );
+    // res.json({response: "You sent me a GET request"});
 });
 
 //POST /questions
@@ -78,12 +74,12 @@ router.post("/", function(req, res, next){
         res.status(201);
         res.json(question);
     });
-    res.json(
-        {
-            response: "You sent me a POST request",
-            body: req.body
-        }
-    );
+    // res.json(
+    //     {
+    //         response: "You sent me a POST request",
+    //         body: req.body
+    //     }
+    // );
 });
 
 //GET /questions/:id
